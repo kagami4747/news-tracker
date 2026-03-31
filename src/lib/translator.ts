@@ -1,4 +1,4 @@
-const MINIMAX_API_URL = process.env.MINIMAX_API_URL || 'https://api.minimax.chat/v1/text/chatcompletion';
+const MINIMAX_API_URL = 'https://api.minimaxi.com/v1/text/chatcompletion_v2';
 
 export async function translateToChinese(
   text: string,
@@ -16,8 +16,8 @@ export async function translateToChinese(
         'Authorization': `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: 'MiniMax-Text-01',
-        max_tokens: 1024,
+        model: 'M2-her',
+        max_completion_tokens: 1024,
         messages: [
           {
             role: 'user',
