@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic';
 
 export default async function Home() {
   const news: NewsItem[] = await fetchAllNews();
-  const apiKey = process.env.ANTHROPIC_API_KEY || '';
+  const apiKey = process.env.MINIMAX_API_KEY || '';
 
   return (
     <div className="min-h-screen bg-gray-50">

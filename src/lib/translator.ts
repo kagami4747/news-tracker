@@ -1,4 +1,4 @@
-const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
+const MINIMAX_API_URL = process.env.MINIMAX_API_URL || 'https://api.minimax.chat/v1/text/chatcompletion';
 
 export async function translateToChinese(
   text: string,
@@ -9,16 +9,14 @@ export async function translateToChinese(
   const truncatedText = text.slice(0, 2000);
 
   try {
-    const response = await fetch(ANTHROPIC_API_URL, {
+    const response = await fetch(MINIMAX_API_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true',
+        'Authorization': `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'MiniMax-Text-01',
         max_tokens: 1024,
         messages: [
           {
@@ -31,12 +29,12 @@ export async function translateToChinese(
 
     if (!response.ok) {
       const errorData = await response.text();
-      console.error('Translation API error:', response.status, errorData);
+      console.error('MiniMax API error:', response.status, errorData);
       return text;
     }
 
     const data = await response.json();
-    return data.content?.[0]?.text || text;
+    return data.choices?.[0]?.message?.content || text;
   } catch (error) {
     console.error('Translation error:', error);
     return text;

@@ -10,7 +10,7 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const forceTranslate = searchParams.get('translate') === 'true';
-    const apiKey = request.headers.get('x-api-key') || process.env.ANTHROPIC_API_KEY || '';
+    const apiKey = request.headers.get('x-api-key') || process.env.MINIMAX_API_KEY || '';
 
     const news = await fetchAllNews();
 
