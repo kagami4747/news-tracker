@@ -16,19 +16,10 @@ function timeAgo(timestamp: number): string {
 function getCategoryLabel(category: string): string {
   const labels: Record<string, string> = {
     ai: 'AI',
-    tech: '科技',
-    international: '国际',
+    tech: 'Tech',
+    international: 'World',
   };
   return labels[category] || category;
-}
-
-function getCategoryColor(category: string): string {
-  const colors: Record<string, string> = {
-    ai: 'bg-purple-100 text-purple-800',
-    tech: 'bg-blue-100 text-blue-800',
-    international: 'bg-green-100 text-green-800',
-  };
-  return colors[category] || 'bg-gray-100 text-gray-800';
 }
 
 export default function NewsCard({ item }: NewsCardProps) {
@@ -40,43 +31,47 @@ export default function NewsCard({ item }: NewsCardProps) {
     : item.summary;
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-5 hover:shadow-lg transition-shadow duration-200">
-      <div className="flex items-start justify-between gap-3 mb-3">
-        <h3 className="text-lg font-semibold text-gray-900 line-clamp-2 flex-1">
-          {displayTitle}
-        </h3>
-        <span className={`px-2 py-1 rounded-full text-xs font-medium whitespace-nowrap ${getCategoryColor(item.category)}`}>
+    <article className="group mb-10 last:mb-0">
+      {/* Meta info */}
+      <div className="flex items-center gap-3 mb-3">
+        <span className="text-[10px] font-bold text-[#6e5773] uppercase tracking-wider">
           {getCategoryLabel(item.category)}
         </span>
+        <span className="w-1 h-1 bg-[#adb3b2] rounded-full"></span>
+        <span className="text-[10px] text-[#5a6060] font-medium">
+          {item.source === 'hackernews' ? 'Hacker News' : 'Reddit'}
+        </span>
+        <span className="w-1 h-1 bg-[#adb3b2] rounded-full"></span>
+        <span className="text-[10px] text-[#5a6060]">{timeAgo(item.publishedAt)}</span>
+        {item.isTranslated && (
+          <>
+            <span className="w-1 h-1 bg-[#adb3b2] rounded-full"></span>
+            <span className="text-[10px] text-[#6e5773]">已翻译</span>
+          </>
+        )}
       </div>
 
-      <p className="text-gray-600 text-sm mb-3 line-clamp-3">
+      {/* Title */}
+      <h2 className="text-xl md:text-2xl font-serif text-[#2d3433] leading-tight mb-3 group-hover:text-[#6e5773] transition-colors cursor-pointer">
+        {displayTitle}
+      </h2>
+
+      {/* Summary */}
+      <p className="text-sm text-[#5a6060] leading-relaxed mb-4 max-w-3xl font-light">
         {displaySummary}
       </p>
 
-      <div className="flex items-center justify-between text-xs text-gray-500">
-        <div className="flex items-center gap-2">
-          <span className="font-medium">
-            {item.source === 'hackernews' ? 'Hacker News' : 'Reddit'}
-          </span>
-          <span>•</span>
-          <span>{timeAgo(item.publishedAt)}</span>
-          {item.isTranslated && (
-            <>
-              <span>•</span>
-              <span className="text-blue-600">已翻译</span>
-            </>
-          )}
-        </div>
+      {/* Source link */}
+      <div className="flex items-center gap-2">
         <a
           href={item.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-blue-600 hover:text-blue-800 font-medium"
+          className="text-[10px] uppercase tracking-widest text-[#6e5773] font-bold hover:text-[#614b66] transition-colors"
         >
-          查看原文 →
+          Read Full Article →
         </a>
       </div>
-    </div>
+    </article>
   );
 }

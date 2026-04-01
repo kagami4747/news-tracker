@@ -16,10 +16,10 @@ export default function NewsList({ initialNews, apiKey }: NewsListProps) {
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
 
   const filters: { value: CategoryFilter; label: string }[] = [
-    { value: 'all', label: '全部' },
-    { value: 'ai', label: 'AI' },
-    { value: 'tech', label: '科技' },
-    { value: 'international', label: '国际' },
+    { value: 'all', label: 'All Stories' },
+    { value: 'ai', label: 'Artificial Intelligence' },
+    { value: 'tech', label: 'Technology' },
+    { value: 'international', label: 'International' },
   ];
 
   const filteredNews = filter === 'all'
@@ -49,16 +49,17 @@ export default function NewsList({ initialNews, apiKey }: NewsListProps) {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex gap-2">
+      {/* Filter Tabs and Refresh */}
+      <div className="flex items-center justify-between mb-8 pb-4 border-b border-[#adb3b2]/10">
+        <div className="flex gap-6 overflow-x-auto no-scrollbar">
           {filters.map((f) => (
             <button
               key={f.value}
               onClick={() => setFilter(f.value)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+              className={`pb-2 text-xs font-semibold tracking-wide whitespace-nowrap transition-colors border-b-2 ${
                 filter === f.value
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  ? 'border-[#6e5773] text-[#2d3433]'
+                  : 'border-transparent text-[#5a6060] hover:text-[#2d3433]'
               }`}
             >
               {f.label}
@@ -66,42 +67,39 @@ export default function NewsList({ initialNews, apiKey }: NewsListProps) {
           ))}
         </div>
 
-        <button
-          onClick={handleRefresh}
-          disabled={isLoading}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
-            isLoading
-              ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-              : 'bg-blue-600 text-white hover:bg-blue-700'
-          }`}
-        >
-          <svg
-            className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+        <div className="flex items-center gap-3">
+          <span className="text-[9px] uppercase tracking-widest text-[#5a6060] font-medium hidden md:block">
+            Last sync: {lastUpdated.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })}
+          </span>
+          <button
+            onClick={handleRefresh}
+            disabled={isLoading}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all text-xs ${
+              isLoading
+                ? 'bg-[#f2f4f3] text-[#5a6060] cursor-not-allowed'
+                : 'bg-[#6e5773] text-[#fff5fc] hover:bg-[#614b66] active:scale-95'
+            }`}
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-            />
-          </svg>
-          {isLoading ? '刷新中...' : '刷新'}
-        </button>
+            <span className="material-symbols-outlined text-sm">
+              {isLoading ? 'progress_activity' : 'refresh'}
+            </span>
+            {isLoading ? 'Updating...' : 'Update Dispatch'}
+          </button>
+        </div>
       </div>
 
-      <p className="text-xs text-gray-500 mb-4">
-        最后更新: {lastUpdated.toLocaleTimeString('zh-CN')} | 共 {filteredNews.length} 条
+      {/* Stats */}
+      <p className="text-[10px] text-[#5a6060] mb-8">
+        {filteredNews.length} stories • {filter === 'all' ? 'All categories' : filters.find(f => f.value === filter)?.label}
       </p>
 
+      {/* News List */}
       {filteredNews.length === 0 ? (
-        <div className="text-center py-12 text-gray-500">
-          <p>暂无新闻</p>
+        <div className="text-center py-16">
+          <p className="text-[#5a6060] text-sm">No stories available</p>
         </div>
       ) : (
-        <div className="grid gap-4 md:grid-cols-2">
+        <div>
           {filteredNews.map((item) => (
             <NewsCard key={item.id} item={item} />
           ))}
